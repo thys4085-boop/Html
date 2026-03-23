@@ -1,3 +1,27 @@
-VukaRide MVP 
-<!-- Header --> <div class="bg-black text-white p-4 text-center text-xl font-bold"> VukaRide </div> <!-- Map Placeholder --> <div class="h-64 bg-gray-300 flex items-center justify-center text-gray-600"> Map Loading... </div> <!-- Ride Input --> <div class="p-4 space-y-3"> <input type="text" placeholder="Pickup location" class="w-full p-3 border rounded-lg" /> <input type="text" placeholder="Drop-off location" class="w-full p-3 border rounded-lg" /> </div> <!-- Fare Estimate --> <div class="px-4 py-2 flex justify-between text-sm text-gray-700"> <span>Estimated Fare</span> <span class="font-bold">R45 - R70</span> </div> <!-- Ride Options --> <div class="px-4 space-y-2"> <div class="flex justify-between items-center border p-3 rounded-lg"> <span>Standard Ride</span> <span class="font-bold">R50</span> </div> <div class="flex justify-between items-center border p-3 rounded-lg"> <span>XL Ride</span> <span class="font-bold">R80</span> </div> </div> <!-- Request Button --> <div class="p-4"> <button onclick="requestRide()" class="w-full bg-green-500 text-white p-4 rounded-xl text-lg font-bold"> Request Ride </button> </div> <!-- Status --> <div id="status" class="text-center text-sm text-gray-600 pb-4"></div> 
-function requestRide() { const status = document.getElementById('status'); status.innerText = 'Searching for driver...'; setTimeout(() => { status.innerText = 'Driver found! Arriving in 5 mins.'; }, 3000); }
+<!DOCTYPE html>
+<html>
+<head>
+  <title>VukaRide MVP</title>
+</head>
+<body>
+  <h1>VukaRide</h1>
+  <p>Map Loading...</p>
+  <input placeholder="Pickup location">
+  <input placeholder="Drop-off location">
+  <p>Estimated Fare R45 - R70</p>
+  <p>Standard Ride R50</p>
+  <p>XL Ride R80</p>
+  <button onclick="requestRide()">Request Ride</button>
+  <p id="status"></p>
+
+  <script>
+    function requestRide() {
+      const status = document.getElementById('status');
+      status.innerText = 'Searching for driver...';
+      setTimeout(() => {
+        status.innerText = 'Driver found! Arriving in 5 mins.';
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
