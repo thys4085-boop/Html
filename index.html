@@ -1,27 +1,512 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>VukaRide MVP</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VukaRide – Move Smarter</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #13131a;
+      --card: #1a1a24;
+      --accent: #f5c842;
+      --accent2: #ff6b35;
+      --text: #f0eff5;
+      --muted: #7a7a8c;
+      --border: rgba(255,255,255,0.07);
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Animated background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -40%;
+      left: -20%;
+      width: 80vw;
+      height: 80vw;
+      background: radial-gradient(circle, rgba(245,200,66,0.07) 0%, transparent 60%);
+      border-radius: 50%;
+      pointer-events: none;
+      animation: pulse 8s ease-in-out infinite;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      bottom: -30%;
+      right: -20%;
+      width: 70vw;
+      height: 70vw;
+      background: radial-gradient(circle, rgba(255,107,53,0.06) 0%, transparent 60%);
+      border-radius: 50%;
+      pointer-events: none;
+      animation: pulse 10s ease-in-out infinite reverse;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.7; }
+    }
+
+    /* HEADER */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 24px 12px;
+      position: relative;
+      z-index: 10;
+      animation: slideDown 0.6s ease both;
+    }
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.6rem;
+      letter-spacing: -0.5px;
+    }
+    .logo span { color: var(--accent); }
+    .badge {
+      background: rgba(245,200,66,0.12);
+      color: var(--accent);
+      font-size: 0.7rem;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: 1px solid rgba(245,200,66,0.25);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* HERO */
+    .hero {
+      padding: 28px 24px 20px;
+      position: relative;
+      z-index: 10;
+      animation: fadeUp 0.7s 0.1s ease both;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: 2.6rem;
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -1.5px;
+    }
+    .hero h1 em {
+      font-style: normal;
+      color: var(--accent);
+      display: block;
+    }
+    .hero p {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-top: 10px;
+      line-height: 1.6;
+      font-weight: 300;
+    }
+
+    /* MAP */
+    .map-box {
+      margin: 0 24px;
+      height: 180px;
+      background: var(--card);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      position: relative;
+      animation: fadeUp 0.7s 0.2s ease both;
+    }
+    .map-inner {
+      width: 100%;
+      height: 100%;
+      background:
+        linear-gradient(135deg, rgba(245,200,66,0.04) 0%, transparent 50%),
+        repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(255,255,255,0.025) 28px, rgba(255,255,255,0.025) 29px),
+        repeating-linear-gradient(90deg, transparent, transparent 28px, rgba(255,255,255,0.025) 28px, rgba(255,255,255,0.025) 29px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .map-dot {
+      width: 14px;
+      height: 14px;
+      background: var(--accent);
+      border-radius: 50%;
+      box-shadow: 0 0 0 4px rgba(245,200,66,0.2);
+      animation: mapPing 2s ease-in-out infinite;
+    }
+    @keyframes mapPing {
+      0%, 100% { box-shadow: 0 0 0 4px rgba(245,200,66,0.2); }
+      50% { box-shadow: 0 0 0 12px rgba(245,200,66,0.05); }
+    }
+    .map-label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .map-tag {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: rgba(10,10,15,0.8);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 5px 10px;
+      font-size: 0.72rem;
+      color: var(--accent);
+      backdrop-filter: blur(8px);
+      font-weight: 500;
+    }
+
+    /* BOOKING CARD */
+    .booking-card {
+      margin: 16px 24px 0;
+      background: var(--card);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      padding: 20px;
+      animation: fadeUp 0.7s 0.3s ease both;
+    }
+    .booking-card h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--muted);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .input-row {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .input-wrap {
+      position: relative;
+    }
+    .input-wrap .dot {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+    .dot-green { background: #4ade80; }
+    .dot-red { background: var(--accent2); }
+    .input-wrap input {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 14px 14px 34px;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .input-wrap input::placeholder { color: var(--muted); }
+    .input-wrap input:focus {
+      border-color: rgba(245,200,66,0.4);
+      background: rgba(245,200,66,0.04);
+    }
+    .divider {
+      width: 1px;
+      height: 16px;
+      background: var(--border);
+      margin: 0 0 0 18px;
+    }
+
+    /* RIDE OPTIONS */
+    .rides {
+      margin: 16px 24px 0;
+      animation: fadeUp 0.7s 0.4s ease both;
+    }
+    .rides h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--muted);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .ride-options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .ride-card {
+      background: var(--card);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .ride-card:hover, .ride-card.active {
+      border-color: var(--accent);
+      background: rgba(245,200,66,0.05);
+    }
+    .ride-card.active .ride-price {
+      color: var(--accent);
+    }
+    .ride-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .ride-icon {
+      font-size: 1.6rem;
+    }
+    .ride-name {
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+    .ride-desc {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .ride-price {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      transition: color 0.2s;
+    }
+    .ride-range {
+      font-size: 0.7rem;
+      color: var(--muted);
+      text-align: right;
+      margin-top: 2px;
+    }
+
+    /* REQUEST BUTTON */
+    .btn-wrap {
+      padding: 20px 24px 32px;
+      animation: fadeUp 0.7s 0.5s ease both;
+    }
+    .btn-request {
+      width: 100%;
+      background: var(--accent);
+      color: #0a0a0f;
+      border: none;
+      border-radius: var(--radius);
+      padding: 18px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-request:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(245,200,66,0.3);
+    }
+    .btn-request:active { transform: translateY(0); }
+    .btn-request.loading {
+      background: var(--card);
+      color: var(--accent);
+      border: 1.5px solid var(--accent);
+    }
+    .btn-request.success {
+      background: #4ade80;
+      color: #0a0a0f;
+    }
+
+    /* STATUS */
+    .status-bar {
+      margin: 0 24px 16px;
+      padding: 14px 18px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      display: none;
+      align-items: center;
+      gap: 10px;
+      animation: fadeUp 0.4s ease both;
+    }
+    .status-bar.show { display: flex; }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+      animation: mapPing 1.2s infinite;
+    }
+    .status-dot.green { background: #4ade80; }
+  </style>
 </head>
 <body>
-  <h1>VukaRide</h1>
-  <p>Map Loading...</p>
-  <input placeholder="Pickup location">
-  <input placeholder="Drop-off location">
-  <p>Estimated Fare R45 - R70</p>
-  <p>Standard Ride R50</p>
-  <p>XL Ride R80</p>
-  <button onclick="requestRide()">Request Ride</button>
-  <p id="status"></p>
+
+  <header>
+    <div class="logo">Vuka<span>Ride</span></div>
+    <div class="badge">MVP</div>
+  </header>
+
+  <div class="hero">
+    <h1>Move<em>Smarter.</em></h1>
+    <p>Fast, affordable rides across South Africa. Book in seconds.</p>
+  </div>
+
+  <div class="map-box">
+    <div class="map-inner">
+      <div class="map-dot"></div>
+      <span class="map-label">Locating you...</span>
+    </div>
+    <div class="map-tag">📍 Live Map</div>
+  </div>
+
+  <div class="booking-card">
+    <h3>Your Trip</h3>
+    <div class="input-row">
+      <div class="input-wrap">
+        <span class="dot dot-green"></span>
+        <input type="text" id="pickup" placeholder="Pickup location" />
+      </div>
+      <div class="divider"></div>
+      <div class="input-wrap">
+        <span class="dot dot-red"></span>
+        <input type="text" id="dropoff" placeholder="Drop-off location" />
+      </div>
+    </div>
+  </div>
+
+  <div class="rides">
+    <h3>Choose Ride</h3>
+    <div class="ride-options">
+      <div class="ride-card active" onclick="selectRide(this, 'Standard', 50)">
+        <div class="ride-left">
+          <div class="ride-icon">🚗</div>
+          <div>
+            <div class="ride-name">Standard</div>
+            <div class="ride-desc">Comfortable everyday ride</div>
+          </div>
+        </div>
+        <div>
+          <div class="ride-price">R50</div>
+          <div class="ride-range">R45 – R70</div>
+        </div>
+      </div>
+      <div class="ride-card" onclick="selectRide(this, 'XL', 80)">
+        <div class="ride-left">
+          <div class="ride-icon">🚙</div>
+          <div>
+            <div class="ride-name">XL Ride</div>
+            <div class="ride-desc">More space, up to 6 passengers</div>
+          </div>
+        </div>
+        <div>
+          <div class="ride-price">R80</div>
+          <div class="ride-range">R75 – R100</div>
+        </div>
+      </div>
+      <div class="ride-card" onclick="selectRide(this, 'Express', 65)">
+        <div class="ride-left">
+          <div class="ride-icon">⚡</div>
+          <div>
+            <div class="ride-name">Express</div>
+            <div class="ride-desc">Priority pickup, fastest route</div>
+          </div>
+        </div>
+        <div>
+          <div class="ride-price">R65</div>
+          <div class="ride-range">R60 – R85</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="status-bar" id="statusBar">
+    <div class="status-dot" id="statusDot"></div>
+    <span id="statusText">Searching for driver...</span>
+  </div>
+
+  <div class="btn-wrap">
+    <button class="btn-request" id="rideBtn" onclick="requestRide()">
+      Request Ride
+    </button>
+  </div>
 
   <script>
+    let selectedRide = 'Standard';
+    let selectedPrice = 50;
+
+    function selectRide(el, name, price) {
+      document.querySelectorAll('.ride-card').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+      selectedRide = name;
+      selectedPrice = price;
+    }
+
     function requestRide() {
-      const status = document.getElementById('status');
-      status.innerText = 'Searching for driver...';
+      const pickup = document.getElementById('pickup').value.trim();
+      const dropoff = document.getElementById('dropoff').value.trim();
+      const btn = document.getElementById('rideBtn');
+      const statusBar = document.getElementById('statusBar');
+      const statusText = document.getElementById('statusText');
+      const statusDot = document.getElementById('statusDot');
+
+      if (!pickup || !dropoff) {
+        btn.style.background = '#ff4444';
+        btn.style.color = '#fff';
+        btn.textContent = 'Enter pickup & drop-off!';
+        setTimeout(() => {
+          btn.style.background = '';
+          btn.style.color = '';
+          btn.textContent = 'Request Ride';
+        }, 2000);
+        return;
+      }
+
+      btn.classList.add('loading');
+      btn.textContent = 'Finding your driver...';
+      btn.disabled = true;
+
+      statusBar.classList.add('show');
+      statusDot.classList.remove('green');
+      statusText.textContent = 'Searching for nearby driver...';
+
       setTimeout(() => {
-        status.innerText = 'Driver found! Arriving in 5 mins.';
+        statusText.textContent = 'Driver found! Arriving in 5 mins.';
+        statusDot.classList.add('green');
+        btn.classList.remove('loading');
+        btn.classList.add('success');
+        btn.textContent = '✓ Driver on the way!';
       }, 3000);
     }
   </script>
+
 </body>
 </html>
